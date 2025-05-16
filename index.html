@@ -1,0 +1,354 @@
+<script type="text/javascript">
+        var gk_isXlsx = false;
+        var gk_xlsxFileLookup = {};
+        var gk_fileData = {};
+        function filledCell(cell) {
+          return cell !== '' && cell != null;
+        }
+        function loadFileData(filename) {
+        if (gk_isXlsx && gk_xlsxFileLookup[filename]) {
+            try {
+                var workbook = XLSX.read(gk_fileData[filename], { type: 'base64' });
+                var firstSheetName = workbook.SheetNames[0];
+                var worksheet = workbook.Sheets[firstSheetName];
+
+                // Convert sheet to JSON to filter blank rows
+                var jsonData = XLSX.utils.sheet_to_json(worksheet, { header: 1, blankrows: false, defval: '' });
+                // Filter out blank rows (rows where all cells are empty, null, or undefined)
+                var filteredData = jsonData.filter(row => row.some(filledCell));
+
+                // Heuristic to find the header row by ignoring rows with fewer filled cells than the next row
+                var headerRowIndex = filteredData.findIndex((row, index) =>
+                  row.filter(filledCell).length >= filteredData[index + 1]?.filter(filledCell).length
+                );
+                // Fallback
+                if (headerRowIndex === -1 || headerRowIndex > 25) {
+                  headerRowIndex = 0;
+                }
+
+                // Convert filtered JSON back to CSV
+                var csv = XLSX.utils.aoa_to_sheet(filteredData.slice(headerRowIndex)); // Create a new sheet from filtered array of arrays
+                csv = XLSX.utils.sheet_to_csv(csv, { header: 1 });
+                return csv;
+            } catch (e) {
+                console.error(e);
+                return "";
+            }
+        }
+        return gk_fileData[filename] || "";
+        }
+        </script><!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Do Duc Minh - Personal Website</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    .timeline {
+      position: relative;
+      padding: 20px 0;
+    }
+    .timeline::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      bottom: 0;
+      left: 50%;
+      width: 4px;
+      background: #4f46e5;
+      transform: translateX(-50%);
+    }
+    .timeline-item {
+      position: relative;
+      margin: 20px 0;
+      width: 50%;
+    }
+    .timeline-item.left {
+      left: 0;
+    }
+    .timeline-item.right {
+      left: 50%;
+    }
+    .timeline-content {
+      background: white;
+      padding: 20px;
+      border-radius: 8px;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+      position: relative;
+    }
+    .timeline-content::before {
+      content: '';
+      position: absolute;
+      top: 20px;
+      width: 0;
+      height: 0;
+      border: 10px solid transparent;
+    }
+    .left .timeline-content::before {
+      right: -20px;
+      border-left-color: white;
+    }
+    .right .timeline-content::before {
+      left: -20px;
+      border-right-color: white;
+    }
+    .timeline-dot {
+      width: 20px;
+      height: 20px;
+      background: #4f46e5;
+      border-radius: 50%;
+      position: absolute;
+      top: 20px;
+      z-index: 10;
+    }
+    .left .timeline-dot {
+      right: -10px;
+    }
+    .right .timeline-dot {
+      left: -10px;
+    }
+  </style>
+</head>
+<body class="bg-gray-100 font-sans">
+  <!-- Navigation -->
+  <nav class="bg-indigo-600 text-white fixed w-full top-0 z-10 shadow-lg">
+    <div class="max-w-7xl mx-auto px-4 py-4 flex justify-between items-center">
+      <h1 class="text-xl font-bold">Do Duc Minh</h1>
+      <ul class="flex space-x-6">
+        <li><a href="#home" class="hover:underline">Home</a></li>
+        <li><a href="#about" class="hover:underline">About</a></li>
+        <li><a href="#awards" class="hover:underline">Awards</a></li>
+        <li><a href="#research" class="hover:underline">Research</a></li>
+        <li><a href="#projects" class="hover:underline">Projects</a></li>
+        <li><a href="#activities" class="hover:underline">Activities</a></li>
+        <li><a href="#internships" class="hover:underline">Internships</a></li>
+        <li><a href="#contact" class="hover:underline">Contact</a></li>
+      </ul>
+    </div>
+  </nav>
+
+  <!-- Home Section -->
+  <section id="home" class="min-h-screen flex items-center justify-center bg-gradient-to-r from-indigo-500 to-purple-600 text-white">
+    <div class="text-center max-w-3xl mx-auto px-4">
+      <h1 class="text-5xl font-bold mb-4">Welcome to My Journey</h1>
+      <p class="text-lg mb-6">I'm Do Duc Minh, a Grade 12 student at Nguyen Hue High School for the Gifted, passionate about AI, sustainable agriculture, and mathematics. Explore my achievements, research, and projects below!</p>
+      <a href="#about" class="bg-white text-indigo-600 px-6 py-3 rounded-full font-semibold hover:bg-indigo-100">Learn More</a>
+    </div>
+  </section>
+
+  <!-- About Section -->
+  <section id="about" class="py-20 bg-white">
+    <div class="max-w-7xl mx-auto px-4">
+      <h2 class="text-4xl font-bold text-center mb-10">Who I Am</h2>
+      <div class="grid md:grid-cols-2 gap-8">
+        <div>
+          <p class="text-lg mb-4">I'm a dedicated student with a strong academic record, currently pursuing my studies at Nguyen Hue High School for the Gifted. My interests lie in Mathematics, Artificial Intelligence, and sustainable solutions for agriculture.</p>
+          <p><strong>Email:</strong> [Your Email]</p>
+          <p><strong>Phone:</strong> [Your Phone]</p>
+          <p><strong>Address:</strong> [Your Address]</p>
+          <p><strong>IELTS:</strong> 7.5</p>
+        </div>
+        <div class="timeline">
+          <div class="timeline-item left">
+            <div class="timeline-dot"></div>
+            <div class="timeline-content">
+              <h3 class="font-semibold">Nguyen Sieu High School</h3>
+              <p class="text-sm text-gray-500">Aug 2019 - Jun 2023</p>
+              <p>GPA: 9.1 (Grade 9)</p>
+            </div>
+          </div>
+          <div class="timeline-item right">
+            <div class="timeline-dot"></div>
+            <div class="timeline-content">
+              <h3 class="font-semibold">Nguyen Hue High School for the Gifted</h3>
+              <p class="text-sm text-gray-500">Sep 2023 - 2026</p>
+              <p>GPA: 9.0 (Grade 10), 9.4 (Grade 11), 9.4 (Grade 12)</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Awards Section -->
+  <section id="awards" class="py-20 bg-gray-100">
+    <div class="max-w-7xl mx-auto px-4">
+      <h2 class="text-4xl font-bold text-center mb-10">Achievements and Recognitions</h2>
+      <div class="timeline">
+        <div class="timeline-item left">
+          <div class="timeline-dot"></div>
+          <div class="timeline-content">
+            <h3 class="font-semibold">Soil Moisture Forecasting (LSTM Model)</h3>
+            <p class="text-sm text-gray-500">May 2023</p>
+            <p>Gold Medal, 1 IDEA 1 World International Competition</p>
+            <a href="https://www.1i1w.com/" class="text-indigo-600 hover:underline">Learn More</a>
+          </div>
+        </div>
+        <div class="timeline-item right">
+          <div class="timeline-dot"></div>
+          <div class="timeline-content">
+            <h3 class="font-semibold">AI and Computer Vision in Irrigation</h3>
+            <p class="text-sm text-gray-500">May 2025</p>
+            <p>Gold Award, AIGC-Singapore 2025</p>
+            <a href="https://aigc-singapore.com/" class="text-indigo-600 hover:underline">Learn More</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Research Section -->
+  <section id="research" class="py-20 bg-white">
+    <div class="max-w-7xl mx-auto px-4">
+      <h2 class="text-4xl font-bold text-center mb-10">My Research Contributions</h2>
+      <div class="timeline">
+        <div class="timeline-item left">
+          <div class="timeline-dot"></div>
+          <div class="timeline-content">
+            <h3 class="font-semibold">Biofertilizer from Household Waste</h3>
+            <p class="text-sm text-gray-500">Nov 2023</p>
+            <p>Experimental study for circular economy.</p>
+          </div>
+        </div>
+        <div class="timeline-item right">
+          <div class="timeline-dot"></div>
+          <div class="timeline-content">
+            <h3 class="font-semibold">Deep Learning Soil Moisture Estimation</h3>
+            <p class="text-sm text-gray-500">Dec 2024</p>
+            <p>Under journal review.</p>
+          </div>
+        </div>
+        <div class="timeline-item left">
+          <div class="timeline-dot"></div>
+          <div class="timeline-content">
+            <h3 class="font-semibold">AI Soil Moisture Monitoring System</h3>
+            <p class="text-sm text-gray-500">Nov 2024</p>
+            <p>Patent pending.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Projects Section -->
+  <section id="projects" class="py-20 bg-gray-100">
+    <div class="max-w-7xl mx-auto px-4">
+      <h2 class="text-4xl font-bold text-center mb-10">Innovative Projects</h2>
+      <div class="timeline">
+        <div class="timeline-item left">
+          <div class="timeline-dot"></div>
+          <div class="timeline-content">
+            <h3 class="font-semibold">Rice Husk Ash MSM</h3>
+            <p class="text-sm text-gray-500">Aug 2024</p>
+            <p>Eco-friendly environmental solution.</p>
+          </div>
+        </div>
+        <div class="timeline-item right">
+          <div class="timeline-dot"></div>
+          <div class="timeline-content">
+            <h3 class="font-semibold">Calibration Soil Moisture Sensor</h3>
+            <p class="text-sm text-gray-500">Mar 2023</p>
+            <p>Sensor calibration for precision agriculture.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Activities Section -->
+  <section id="activities" class="py-20 bg-white">
+    <div class="max-w-7xl mx-auto px-4">
+      <h2 class="text-4xl font-bold text-center mb-10">Leadership and Community Involvement</h2>
+      <div class="timeline">
+        <div class="timeline-item left">
+          <div class="timeline-dot"></div>
+          <div class="timeline-content">
+            <h3 class="font-semibold">Hanoi-Amsterdam Student Council</h3>
+            <p class="text-sm text-gray-500">May 2022 - Present</p>
+            <p>Executive Committee, organizing student events.</p>
+          </div>
+        </div>
+        <div class="timeline-item right">
+          <div class="timeline-dot"></div>
+          <div class="timeline-content">
+            <h3 class="font-semibold">GreenAms 6520 Robotics Team</h3>
+            <p class="text-sm text-gray-500">Sep 2021 - Sep 2022</p>
+            <p>Technical Department Member.</p>
+          </div>
+        </div>
+        <div class="timeline-item left">
+          <div class="timeline-dot"></div>
+          <div class="timeline-content">
+            <h3 class="font-semibold">AIESEC Summer Camp Ambassador</h3>
+            <p class="text-sm text-gray-500">Apr 2022 - Jul 2022</p>
+            <p>Promoted youth leadership programs.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Internships Section -->
+  <section id="internships" class="py-20 bg-gray-100">
+    <div class="max-w-7xl mx-auto px-4">
+      <h2 class="text-4xl font-bold text-center mb-10">Professional Experiences</h2>
+      <div class="timeline">
+        <div class="timeline-item left">
+          <div class="timeline-dot"></div>
+          <div class="timeline-content">
+            <h3 class="font-semibold">NextTech Group</h3>
+            <p class="text-sm text-gray-500">May 2021 - Jul 2021</p>
+            <p>Summer Research in Machine Learning.</p>
+          </div>
+        </div>
+        <div class="timeline-item right">
+          <div class="timeline-dot"></div>
+          <div class="timeline-content">
+            <h3 class="font-semibold">VTI</h3>
+            <p class="text-sm text-gray-500">Jun 2022 - Aug 2022</p>
+            <p>Software Dev Engineering Training.</p>
+          </div>
+        </div>
+        <div class="timeline-item left">
+          <div class="timeline-dot"></div>
+          <div class="timeline-content">
+            <h3 class="font-semibold">TH-TEK Company</h3>
+            <p class="text-sm text-gray-500">Jun 2025 - Aug 2025</p>
+            <p>Trainee in tech development.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Contact Section -->
+  <section id="contact" class="py-20 bg-white">
+    <div class="max-w-7xl mx-auto px-4 text-center">
+      <h2 class="text-4xl font-bold mb-10">Get in Touch</h2>
+      <p class="text-lg mb-4">I'm open to collaborations and opportunities in AI, mathematics, and sustainable agriculture.</p>
+      <p><strong>Email:</strong> [Your Email]</p>
+      <p><strong>Phone:</strong> [Your Phone]</p>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer class="bg-indigo-600 text-white py-6">
+    <div class="max-w-7xl mx-auto px-4 text-center">
+      <p>&copy; 2025 Do Duc Minh. All rights reserved.</p>
+    </div>
+  </footer>
+
+  <script>
+    // Smooth scrolling for navigation links
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+      anchor.addEventListener('click', function(e) {
+        e.preventDefault();
+        document.querySelector(this.getAttribute('href')).scrollIntoView({
+          behavior: 'smooth'
+        });
+      });
+    });
+  </script>
+</body>
+</html>
